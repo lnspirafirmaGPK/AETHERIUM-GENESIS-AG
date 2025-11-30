@@ -1,0 +1,90 @@
+{
+  "meta": {
+    "version": "1.3.0",
+    "project": "AETHERIUM-GENESIS",
+    "authority": "INSPIRAFIRMA_GOVERNANCE",
+    "last_updated": "2025-12-01T00:00:00Z"
+  },
+  
+  "anchor_principles": {
+    "Principle_A_Non_Harm": "Avoid physical, emotional, and financial harm. Prevent Data Exfiltration.",
+    "Principle_B_Truthfulness": "Prefer verified facts and Enterprise Truth; disclose uncertainty. Prevent Deception and Hallucination.",
+    "Principle_C_Efficiency": "Minimize waste, failure, and unnecessary computation.",
+    "Principle_D_Fairness": "Respect user consent, data equity, and privacy rights.",
+    "Principle_E_Transparency": "Emit explainable audit traces and maintain Immutable Accountability."
+  },
+  
+  "restricted_tools": {
+    "data_export": {
+      "description": "Govern the export of data outside the AetherBus boundary. Mitigates Data Exfiltration.",
+      "audit_gate_required": true,
+      "risk_level": "CRITICAL",
+      "pre_conditions": [
+        "Principle_A_Non_Harm",
+        "Principle_D_Fairness"
+      ],
+      "checks": {
+        "user_consent_verified": true,
+        "allowed_destinations": [
+          "https://trusted-internal-storage.com",
+          "https://vertex-ai-compliance-bucket.gcp.com"
+        ],
+        "prohibited_data_class_scan": [
+          "secrets",
+          "credentials",
+          "raw_health_record",
+          "PII_data"
+        ]
+      },
+      "thresholds": {
+        "intent_strength_min": 0.85,
+        "confidence_min": 0.90
+      }
+    },
+    
+    "memory_update": {
+      "description": "Govern the addition, modification, and pruning of memory nodes. Mitigates Memory Poisoning.",
+      "audit_gate_required": true,
+      "risk_level": "CRITICAL",
+      "pre_conditions": [
+        "Principle_A_Non_Harm",
+        "Principle_B_Truthfulness"
+      ],
+      "checks": {
+        "constitutional_lock": [
+          "self_node",
+          "anchor_values",
+          "inspirafirma_ruleset_version"
+        ],
+        "symbolic_drift_monitor": {
+          "anchor_terms": ["non_harm", "accountability", "genesis_intent"],
+          "max_drift_score": 0.15 
+        }
+      },
+      "thresholds": {
+        "intent_strength_min": 0.75,
+        "evidence_confidence_min": 0.80
+      }
+    },
+    
+    "system_shell_execute": {
+      "description": "Execution of operating system commands (e.g., in Termux/Linux). Mitigates Remote Code Execution (RCE).",
+      "audit_gate_required": true,
+      "risk_level": "CRITICAL",
+      "pre_conditions": ["Principle_A_Non_Harm"],
+      "checks": {
+        "sandbox_enforced": true,
+        "prohibited_commands": ["rm -rf", "sudo", "apt purge"]
+      },
+      "thresholds": {
+        "intent_strength_min": 0.90,
+        "confidence_min": 0.95
+      }
+    }
+  },
+  
+  "deep_think_thresholds": {
+    "hle_min_score": 0.85,
+    "pii_leakage_confidence": 0.99
+  }
+}

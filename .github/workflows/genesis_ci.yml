@@ -10,7 +10,7 @@ on:
 
 jobs:
   code_quality_audit:
-    name: 🛡️ Validator Sage: Code & Governance Audit
+    name: 🛡️ Validator Sage:
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Clone Repository

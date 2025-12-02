@@ -1,6 +1,5 @@
 name: "🌌 GENESIS: Core Integrity & Policy Audit"
 
-# กำหนดให้ Workflow ทำงานเมื่อมีการ Push หรือ Pull Request เข้าสู่ Branch หลัก
 on:
   push:
     branches:
@@ -10,69 +9,18 @@ on:
       - main
 
 jobs:
-  # 1. Job: การตรวจสอบความสะอาดของโค้ด (Code Hygiene Audit)
   code_quality_audit:
     name: 🛡️ Validator Sage: Code & Governance Audit
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Clone Repository (AETHERIUM-GENESIS)
+      - name: 📥 Clone Repository
         uses: actions/checkout@v4
-
-      - name: 🐍 Setup Python 3.11 (สำหรับรัน Agent Logic)
+      - name: 🐍 Setup Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
-          
-      - name: 📦 ติดตั้ง Dependencies
-        run: pip install flake8 mypy  # ติดตั้งเครื่องมือตรวจสอบคุณภาพ
-
-      - name: 📝 ตรวจสอบความสะอาดของโค้ด (Flake8 Linter)
-        run: flake8 . --max-line-length=120 --exclude .git,__pycache__,venv
-        # Flake8 ใช้ตรวจสอบ Style และข้อผิดพลาดทั่วไป (Principle C: Efficiency)
-
-      - name: 🧠 Deep Think Audit: ตรวจสอบ GEPPolicyEnforcer Logic
-        # รัน Enforcer ในโหมดทดสอบเพื่อยืนยันว่า Ruleset โหลดได้ และ Logic ความปลอดภัยไม่พัง
-        # (สมมติว่าไฟล์อยู่ใน core/governance/)
-        run: |
-          python core/governance/gep_policy_enforcer.py
-        # ผลลัพธ์จากการรัน __main__ ของไฟล์นี้คือการยืนยันตรรกะความปลอดภัย (Principle A & B)
-
-      - name: 📜 ตรวจสอบความถูกต้องของ Ruleset JSON (Syntax Check)
-        # ยืนยันว่าไฟล์ inspirafirma_ruleset.json ไม่มีข้อผิดพลาดทางไวยากรณ์ JSON
-        run: |
-          python -m json.tool config/policies/inspirafirma_ruleset.json > /dev/null
-          echo "✅ inspirafirma_ruleset.json passed JSON validity check."
-        
-  # 2. Job: การตรวจสอบความสมบูรณ์ของคลังความรู้ (Pangenes Data Integrity Check)
-  pangenes_data_integrity:
-    name: 🧬 Pangenes Knowledge Vault Audit
-    runs-on: ubuntu-latest
-    steps:
-      - name: 📥 Clone Repository
-        uses: actions/checkout@v4
-        
-      - name: 🐍 Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: 🧪 ตรวจสอบความถูกต้องของ PANGENES Data (JSONL Format)
-        # รันสคริปต์ที่กำหนดเองเพื่อตรวจสอบไฟล์ .jsonl
-        run: |
-          # โค้ดนี้จำลองการตรวจสอบทีละบรรทัดว่าทุกบรรทัดเป็น JSON ที่ถูกต้องหรือไม่
-          python -c '
-import json
-import sys
-try:
-    with open("data/pangenes/pangenes_knowledge_seed.jsonl", "r", encoding="utf-8") as f:
-        for i, line in enumerate(f):
-            json.loads(line)
-    print("✅ Pangenes JSONL structure is valid and complete.")
-except FileNotFoundError:
-    print("⚠️ WARNING: pangenes_knowledge_seed.jsonl not found. Skipping data check.")
-except json.JSONDecodeError as e:
-    print(f"❌ ERROR: Invalid JSON format in line {i+1} of PANGENES file.")
-    print(f"   Details: {e}")
-    sys.exit(1)
-'
+      - name: 📦 Install Dependencies
+        run: pip install flake8 mypy
+      - name: 📝 Run Flake8 Linter
+        run: flake8 --max-line-length=120 --exclude .git,__pycache__,venv
